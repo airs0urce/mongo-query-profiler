@@ -1,0 +1,24 @@
+{
+  "name": "mongo-query-profiler",
+  "version": "0.0.1",
+  "description": "A command-line utility for MongoDB that activates the database profiler, generates interactive html report to let you identify performance bottlenecks",
+  "bin": {
+    "mongo-query-profiler": "bin/mongo-query-profiler"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dmitry Eroshenko <airs0urce0@gmail.com> (https://github.com/airs0urce)",
+  "license": "ISC",
+  "dependencies": {
+    "awaiting": "3.0.0",
+    "chalk": "5.6.2",
+    "commander": "14.0.2",
+    "dayjs": "1.11.19",
+    "debug": "4.4.3",
+    "log-update": "7.0.1",
+    "mongodb": "7.0.0",
+    "yocto-spinner": "1.0.0"
+  }
+}

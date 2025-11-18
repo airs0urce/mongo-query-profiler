@@ -1,0 +1,137 @@
+# Mongo Query Profiler
+
+Command‑line helper that collects slow query samples and converts them into an interactive HTML report so you can spot bottlenecks quickly.
+
+This is an simple tool which doesn't require any initial setup, for long-term usage you can consider Percona Monitoring And Management for MongoDB:
+<https://www.percona.com/software/database-tools/percona-monitoring-and-management/mongodb-monitoring>
+
+## Quick Start
+
+1. Install dependencies: `npm install`
+2. Make the CLI available (pick one):
+   - Local: `npx mongo-query-profiler collect ...`
+   - Global: `npm install -g .` then run `mongo-query-profiler ...`
+3. Typical workflow:
+   - `collect` profiling data from your MongoDB instance
+   - `report` to convert the JSON files under `profiling-reports/` into HTML
+   - Inspect the report, then optionally `cleanup-mongodb` and/or `cleanup-reports`
+
+All profiling artifacts are saved under `profiling-reports/REPORT_<timestamp>/`.
+
+## CLI Commands & Examples
+
+Every command supports `-h, --help` for details. The binary is published as `mongo-query-profiler`.
+
+### collect — capture slow queries
+
+Enable the profiler on one or more databases, wait for the sampling window to finish, then dump each database’s `system.profile` collection as JSON.
+
+Syntax example:
+
+```
+npx mongo-query-profiler collect mongodb://user:pass@host:27017 \
+  --slowms 50 \
+  --databases sales analytics \
+  --databases-parallel 1 \
+  --duration 5 \
+  --max-profile-size 8
+```
+
+Where "mongodb://user:pass@host:27017" is MongoDB connection string. If you don't have user/password "mongodb://host:27017".
+
+This command will profile "sales" and "analytics" databases for 5 minutes. Profiles will be saved in `profiling-reports/REPORT_<timestamp>/`.
+
+Key options:
+
+- `--slowms <ms>`: only record operations slower than this threshold (default `100`)
+- `--databases <names...>`: limit profiling to specific databases (default `all`)
+- `--databases-parallel <n>`: throttle how many DBs are profiled simultaneously (default `0`, meaning all)
+- `--duration <minutes>`: how long to keep the profiler on (default `1`)
+- `--max-profile-size <MB>`: size for the capped `system.profile` collection (default `2`)
+
+### report — build the HTML dashboard
+
+Converts the latest raw profiles into a single HTML file.
+
+Syntax example:
+
+```
+npx mongo-query-profiler report ./report.html
+```
+
+The command gathers profiles from `profiling-reports` folder and embeds them into one HTML file, 
+so you get single self-contained interactive report, analyze it and send to other people by email/messenger etc.
+
+### cleanup-mongodb — disable profiler and deletes profiles in each database
+
+Stops the profiler on all databases reachable through the provided URI and drops `system.profile` collections. Handy if `collect` was interrupted.
+
+Syntax example:
+
+```
+npx mongo-query-profiler cleanup-mongodb mongodb://user:pass@host:27017
+```
+
+### cleanup-reports — delete local artifacts
+
+Removes every subfolder inside `profiling-reports/`, freeing disk space or prepping for a fresh capture.
+
+Syntax example:
+
+```
+npx mongo-query-profiler cleanup-reports
+```
+
+
+### When You Find a Slow Query
+
+1. Insert query in MongoDB Compass to "find" filter make sure you added all parts of query like "projection", "limit", "sort".
+2. Click **Explain** in Compass to inspect the winning plan, stage latencies, and server stats.
+3. Compare the `executionStats` results with the profiler sample to confirm the same pattern (blocked on IXSCAN vs COLLSCAN, high `keysExamined`, high `docsExamined`, etc.).
+
+## Optimization Reading List
+
+- Single Field Indexes: <https://www.mongodb.com/docs/manual/core/indexes/index-types/index-single/>
+- Compound indexes: <https://www.mongodb.com/docs/manual/core/index-compound/>
+- The ESR Guideline. Important to be able to make optimal compound index: <https://www.mongodb.com/docs/manual/tutorial/equality-sort-range-guideline/>
+- Comparing `keysExamined` (index reads) vs `docsExamined` (slow disk reads): <https://www.mongodb.com/docs/manual/tutorial/explain-slow-queries/#evaluate-key-examination.>
+- Use covered query to mitigate slow disk reads and get data from memory only: <https://www.mongodb.com/docs/manual/core/query-optimization/#covered-query>
+- Whenever possible rewrite your query to use positive filters. Instead of using `$ne` or `$nin`
+- How to optimize slow query with `{field: {$exists: true/false}}` filter: <https://www.mongodb.com/docs/manual/reference/operator/query/exists/#use-a-sparse-index-to-improve--exists-performance>, example: <https://www.mongodb.com/community/forums/t/exists-query-with-index-very-slow/4960/6>
+- When you add an index, check if you can use Partial Index which decreases memory usage and speeds up index scans: https://www.mongodb.com/docs/manual/core/index-partial/
+
+
+## Connecting Through an SSH Tunnel
+
+If your MongoDB server is only reachable inside a private network, create an SSH tunnel and point the profiler to the local forwarded port.
+
+### Terminal example
+
+```
+ssh -N -L 27018:127.0.0.1:27017 ops@bastion.example.com
+```
+
+- `-L 27018:127.0.0.1:27017` forwards local port `27018` to the remote MongoDB running on the bastion’s `127.0.0.1:27017`
+- `-N` keeps the tunnel open without running a remote shell
+
+Then run `mongo-query-profiler collect mongodb://localhost:27018`.
+
+### GUI helpers
+
+- macOS: [Core Tunnel](https://github.com/auroraapp/Core-Tunnel) simplifies saved tunnels and auto-reconnects
+- Windows: [PuTTY](https://www.chiark.greenend.org.uk/~sgtatham/putty/) or [MobaXterm](https://mobaxterm.mobatek.net/) both support local port forwarding profiles
+
+Whichever client you use, ensure the tunnel stays open for the entire profiling window defined by `--duration`.
+
+## Best Practices
+
+- Turn on profiling in production sparingly; use `--databases-parallel` to limit concurrent load.
+- Keep `--duration` as short as possible while still capturing representative load spikes.
+- After tuning queries/indexes, use Compass Explain to confirm changes helped.
+
+## Troubleshooting
+
+  - In MongoDB sharded clusters, connect directly to the shards rather than the mongos router, since profiler data on mongos will not provide useful information.
+  - If your reports are empty, increase the --duration or lower the --slowms value so the profiler can capture enough events.
+
+

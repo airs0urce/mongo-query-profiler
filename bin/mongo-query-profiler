@@ -1,0 +1,121 @@
+#!/usr/bin/env node
+import a from 'awaiting';
+import { Command, InvalidArgumentError } from 'commander';
+import packageJson from '../package.json' with { type: "json" };
+import Profiler from '../src/Profiler.js';
+import generateReport from '../src/generateReport.js';
+import cleanupReports from '../src/cleanupReports.js';
+import chalk from 'chalk';
+import yoctoSpinner from 'yocto-spinner';
+
+
+const VERSION = packageJson.version;
+
+const program = new Command();
+program
+    .name('mongo-query-profiler')
+    .description(packageJson.description)
+    .version('1.0.0');
+
+program
+    .command('collect')
+    .argument('<connection url>', 'MongoDB connection URL. Example: mongodb://localhost:27017')
+    .description('Collect profiles from MongoDB instance')
+    .option(
+        '--slowms <ms>', 
+        'Only profile db queries take longer than N milliseconds to execute (default value: 100ms).', 
+        v => parseInt(v, 10),
+        100
+    )
+    .option(
+        '--databases <databases...>', `List of databases you want to profile`
+        + `(default: all databases on target instance)`, 
+        'all'
+    )
+    .option(
+        '--databases-parallel <number>', 
+        'Enable profiler on how many databases simulatenously. '
+        + 'Useful for production as MongoDB profiler has overhead '
+        + 'when enabled. Pass 0 to enable profiler for all databases '
+        + 'simulatenously (default: 0, i.e all databases)', 
+        v => parseInt(v, 10),
+        0
+    )
+    .option(
+        '--duration <duration>', 'Profiling time in minutes', 
+        v => parseInt(v, 10),
+        1
+    )
+    .option(
+        '--max-profile-size <size>', 
+        'Maximal size of system.profile database in megabytes', 
+        v => parseInt(v, 10),
+        2
+    )
+    .action(async (mongoConnectionUrl, opts) => {
+        const profiler = new Profiler(mongoConnectionUrl, opts);
+
+        const profilingConfig = profiler.getProfilingConfig().asText;
+        console.log(chalk.yellow(profilingConfig));
+        
+        const result = await profiler.run();
+        process.exit(0);
+    });
+
+program
+    .command('report')
+    .argument('<output-html-file>', 'Folder where report.html will be saved')
+    .description(`Generates interactive html file with `
+    + `all the profiles from 'mongo-query-profiler collect' command`)
+    .action(async (outputHtmlFile, opts) => {
+        await generateReport(outputHtmlFile);
+        process.exit(0);
+    });
+
+program
+    .command('cleanup-mongodb')
+    .argument('<connection url>', 'MongoDB connection URL. Example: mongodb://localhost:27017')
+    .description('Stops profiler for all databases and drops "system.profile" collection. '
+               + 'Useful in case when you interrupt "mongo-query-profiler collect" script or some error happened '
+               + 'during profiling and profiler left enabled on MongoDB instance.')
+    .action(async (mongoConnectionUrl, opts) => {
+
+        console.log(`Connecting MongoDB instance ${mongoConnectionUrl}`);
+
+        const profiler = new Profiler(mongoConnectionUrl, {});
+        const cleanupSpinner = yoctoSpinner({text: `Cleanup started`}).start();
+        try {
+            await profiler.cleanupAllDbs();
+        } catch(e) {
+            cleanupSpinner.error(`Cleanup failed: ${e.message}`);
+            throw e;
+        }
+        cleanupSpinner.success(`Cleanup finished`);
+        process.exit(0);
+    });
+
+program
+    .command('cleanup-reports')
+    .description('Delete collected profiles.')
+    .action(async () => {
+        await cleanupReports();
+        process.exit(0);
+    });
+
+
+program.parse();
+
+function fatal(err) {
+    if (err instanceof Error) {
+        console.error(chalk.red(err.stack));
+    } else {
+        console.error(chalk.red(String(err)));
+    }
+    process.exit(1);
+}
+process.on('uncaughtException', fatal);
+process.on('unhandledRejection', fatal);
+
+
+
+
