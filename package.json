@@ -20,5 +20,13 @@
     "log-update": "7.0.1",
     "mongodb": "7.0.0",
     "yocto-spinner": "1.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/airs0urce/mongo-query-profiler.git"
+  },
+  "bugs": {
+    "url": "https://github.com/airs0urce/mongo-query-profiler/issues"
+  },
+  "homepage": "https://github.com/airs0urce/mongo-query-profiler"
 }
