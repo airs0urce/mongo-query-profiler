@@ -1,3 +1,7 @@
+<img width="300" height="300" align="right" alt="8DED7942-D8B3-4F01-A5AD-8830ED98C5B8" src="https://github.com/user-attachments/assets/7ce98be5-5a53-4792-b1c5-265b0a32e24a](https://github.com/user-attachments/assets/ebde9a42-69f8-460a-a7ad-09204daa20d1" />
+
+
+
 # Mongo Query Profiler
 
 Command‑line helper that collects slow query samples and converts them into an interactive HTML report so you can spot bottlenecks quickly.
