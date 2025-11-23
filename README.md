@@ -5,6 +5,21 @@ Command‑line helper that collects slow query samples and converts them into an
 This is an simple tool which doesn't require any initial setup, for long-term usage you can consider Percona Monitoring And Management for MongoDB:
 <https://www.percona.com/software/database-tools/percona-monitoring-and-management/mongodb-monitoring>
 
+## Contents
+- [Quick Start](#quick-start)
+- [CLI Commands & Examples](#cli-commands--examples)
+  - [collect — capture slow queries](#collect--capture-slow-queries)
+  - [report — build the HTML dashboard](#report--build-the-html-dashboard)
+  - [cleanup-mongodb — disable profiler and deletes profiles in each database](#cleanup-mongodb--disable-profiler-and-deletes-profiles-in-each-database)
+  - [cleanup-reports — delete local artifacts](#cleanup-reports--delete-local-artifacts)
+  - [When You Find a Slow Query](#when-you-find-a-slow-query)
+- [Optimization Reading List](#optimization-reading-list)
+- [Connecting Through an SSH Tunnel](#connecting-through-an-ssh-tunnel)
+  - [Terminal example](#terminal-example)
+  - [GUI helpers](#gui-helpers)
+- [Best Practices](#best-practices)
+- [Troubleshooting](#troubleshooting)
+
 ## Quick Start
 
 1. Install dependencies: `npm install`
