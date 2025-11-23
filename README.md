@@ -9,6 +9,10 @@ This is an simple tool which doesn't require any initial setup, for long-term us
 
 ## Contents
 - [Quick Start](#quick-start)
+  - [Install from NPM](#install-from-npm)
+  - [Run using NPX](#run-using-npx)
+  - [Run from cloned source code](#run-from-cloned-source-code)
+- [Typical workflow](#typical-workflow)
 - [CLI Commands & Examples](#cli-commands--examples)
   - [collect — capture slow queries](#collect--capture-slow-queries)
   - [report — build the HTML dashboard](#report--build-the-html-dashboard)
@@ -24,16 +28,30 @@ This is an simple tool which doesn't require any initial setup, for long-term us
 
 ## Quick Start
 
-1. Install dependencies: `npm install`
-2. Make the CLI available (pick one):
-   - Local: `npx mongo-query-profiler collect ...`
-   - Global: `npm install -g .` then run `mongo-query-profiler ...`
-3. Typical workflow:
-   - `collect` profiling data from your MongoDB instance
-   - `report` to convert the JSON files under `profiling-reports/` into HTML
-   - Inspect the report, then optionally `cleanup-mongodb` and/or `cleanup-reports`
+### Install from NPM
+1. Install Node.js: https://nodejs.org/ 
+2. Install package globally `npm install -g mongo-query-profiler`
+3. Run commands `mongo-query-profiler --help`
 
-All profiling artifacts are saved under `profiling-reports/REPORT_<timestamp>/`.
+### Run using NPX
+
+1. Install Node.js: https://nodejs.org/ 
+2. Run using npx: `npx mongo-query-profiler --help`
+
+### Run from cloned source code
+2. Install Node.js: https://nodejs.org/ 
+1. Clone repo: `git clone https://github.com/airs0urce/mongo-query-profiler.git && cd mongo-query-profiler`
+3. Install dependencies: `npm install`
+4. Install package globally: `npm install -g`
+5. Run commands: `mongo-query-profiler --help`
+
+## Typical workflow:
+
+Note: If your MongoDB instance is behind a firewall or not exposed on a public port, see [Connecting Through an SSH Tunnel](#connecting-through-an-ssh-tunnel)
+
+ 1. Collect profiling data from your MongoDB instance `mongo-query-profiler collect mongodb://127.0.0.1:27017`
+ 2. Generate HTML report: `mongo-query-profiler report ./report.html`
+ 3. Open "report.html"
 
 ## CLI Commands & Examples
 
