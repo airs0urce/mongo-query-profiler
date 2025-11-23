@@ -1,6 +1,6 @@
 {
   "name": "mongo-query-profiler",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A command-line utility for MongoDB that activates the database profiler, generates interactive html report to let you identify performance bottlenecks",
   "bin": {
     "mongo-query-profiler": "bin/mongo-query-profiler"
