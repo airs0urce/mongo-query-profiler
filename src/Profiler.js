@@ -230,9 +230,11 @@ for databases: "${asObject.dbList}". Profile size set to ${asObject.profileSizeM
     async cleanupAllDbs() {
         const databasesNames = await this.getDatabaseslist();
         
+        const promises = [];
         for (const dbName of databasesNames) {
-            await this.cleanup(dbName);
+            promises.push(this.cleanup(dbName));
         }
+        await Promise.all(promises);
     }
 }
 
