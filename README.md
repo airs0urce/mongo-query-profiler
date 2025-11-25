@@ -23,10 +23,10 @@ This is an simple tool which doesn't require any initial setup, for long-term us
   - [Run from cloned source code](#run-from-cloned-source-code)
 - [Typical workflow](#typical-workflow)
 - [CLI Commands & Examples](#cli-commands--examples)
-  - [collect — capture slow queries](#collect--capture-slow-queries)
-  - [report — build the HTML dashboard](#report--build-the-html-dashboard)
-  - [cleanup-mongodb — disable profiler and deletes profiles in each database](#cleanup-mongodb--disable-profiler-and-deletes-profiles-in-each-database)
-  - [cleanup-reports — delete local artifacts](#cleanup-reports--delete-local-artifacts)
+  - [collect — capture slow queries](#collect)
+  - [report — build the HTML dashboard](#report)
+  - [cleanup-mongodb](#cleanup-mongodb)
+  - [cleanup-reports](#cleanup-reports)
   - [When You Find a Slow Query](#when-you-find-a-slow-query)
 - [Optimization Reading List](#optimization-reading-list)
 - [Connecting Through an SSH Tunnel](#connecting-through-an-ssh-tunnel)
@@ -54,7 +54,7 @@ This is an simple tool which doesn't require any initial setup, for long-term us
 4. Install package globally: `npm install -g`
 5. Run commands: `mongo-query-profiler --help`
 
-## Typical workflow:
+## Typical workflow
 
 Note: If your MongoDB instance is behind a firewall or not exposed on a public port, see [Connecting Through an SSH Tunnel](#connecting-through-an-ssh-tunnel)
 
@@ -73,6 +73,7 @@ mongo-query-profiler report --help
 mongo-query-profiler cleanup-mongodb --help
 mongo-query-profiler cleanup-reports --help
 
+<a id="collect"></a>
 ### collect [options] \<connection url\>  — capture slow queries
 
 
@@ -123,6 +124,7 @@ Default: 2 MB
 
 ##### -h, --help
 
+<a id="report"></a>
 ### report \<output-html-file\> — build the HTML dashboard
 
 Converts the latest raw profiles into a single HTML file.
@@ -136,6 +138,7 @@ mongo-query-profiler report ./report.html
 The command gathers profiles from `profiling-reports` folder and embeds them into one HTML file, 
 so you get single self-contained interactive report, analyze it and send to other people by email/messenger etc.
 
+<a id="cleanup-mongodb"></a>
 ### cleanup-mongodb \<connection url\> — disable profiler and deletes profiles in each database
 
 Stops the profiler on all databases reachable through the provided URI and drops `system.profile` collections. Handy if `collect` was interrupted.
@@ -146,6 +149,7 @@ Syntax example:
 mongo-query-profiler cleanup-mongodb mongodb://user:pass@host:27017
 ```
 
+<a id="cleanup-reports"></a>
 ### cleanup-reports — delete local artifacts
 
 Removes every subfolder inside `profiling-reports/`, freeing disk space or prepping for a fresh capture.
