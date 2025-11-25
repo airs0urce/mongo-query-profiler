@@ -1,3 +1,12 @@
+I’m currently looking for a new role in backend and front-end engineering. Node.js, MongoDB, Vue, etc.
+Open to remote full-time or long-term contract work — including compensation in crypto. 
+Feel free to reach out.
+  
+CV: <a href="https://drive.google.com/file/d/1afd9T1rpAua0hPcRQUeg0QG4BSLqqjPX/view?usp=sharing">https://drive.google.com/file/d/1afd9T1rpAua0hPcRQUeg0QG4BSLqqjPX/view?usp=sharing</a>
+<br/>LinkedIn: <a href="https://www.linkedin.com/in/dmitry-eroshenko">https://www.linkedin.com/in/dmitry-eroshenko</a>
+<br/>Telegram: <a href="https://t.me/airs0urce">@airs0urce</a>
+<br/>Email: airs0urce0@gmail.com
+
 <img src="https://github.com/user-attachments/assets/e86372f7-29a4-4bc3-822e-4dd35e38c006" width="300" height="300" align="right" />
 
 # Mongo Query Profiler
