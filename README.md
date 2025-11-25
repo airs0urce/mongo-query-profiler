@@ -64,16 +64,24 @@ Note: If your MongoDB instance is behind a firewall or not exposed on a public p
 
 ## CLI Commands & Examples
 
-Every command supports `-h, --help` for details. The binary is published as `mongo-query-profiler`.
+Every command supports `-h, --help` for details.
 
-### collect — capture slow queries
+Examples:
+mongo-query-profiler --help
+mongo-query-profiler collect --help
+mongo-query-profiler report --help
+mongo-query-profiler cleanup-mongodb --help
+mongo-query-profiler cleanup-reports --help
+
+### collect [options] \<connection url\>  — capture slow queries
+
 
 Enable the profiler on one or more databases, wait for the sampling window to finish, then dump each database’s `system.profile` collection as JSON.
 
 Syntax example:
 
 ```
-npx mongo-query-profiler collect mongodb://user:pass@host:27017 \
+mongo-query-profiler collect mongodb://user:pass@host:27017 \
   --slowms 50 \
   --databases sales analytics \
   --databases-parallel 1 \
@@ -85,35 +93,57 @@ Where "mongodb://user:pass@host:27017" is MongoDB connection string. If you don'
 
 This command will profile "sales" and "analytics" databases for 5 minutes. Profiles will be saved in `profiling-reports/REPORT_<timestamp>/`.
 
-Key options:
+#### Options
 
-- `--slowms <ms>`: only record operations slower than this threshold (default `100`)
-- `--databases <names...>`: limit profiling to specific databases (default `all`)
-- `--databases-parallel <n>`: throttle how many DBs are profiled simultaneously (default `0`, meaning all)
-- `--duration <minutes>`: how long to keep the profiler on (default `1`)
-- `--max-profile-size <MB>`: size for the capped `system.profile` collection (default `2`)
+##### --slowms \<ms\>
 
-### report — build the HTML dashboard
+Specify the minimum query execution time (in milliseconds) to be included in the profiling output.
+Default: 100 ms
+
+##### --databases \<databases...\>
+
+List the target databases to profile. If omitted, profiling runs on all databases available on the connected MongoDB instance.
+Default: “all”
+
+##### --databases-parallel \<number\>
+
+Controls how many databases have profiling enabled at the same time. This helps reduce overhead on production systems, as MongoDB’s profiler adds measurable load when active.
+Use 0 to enable profiling on all databases simultaneously.
+Default: 0
+
+##### --duration \<minutes\>
+
+Time window (in minutes) during which profiling remains active.
+Default: 1
+
+##### --max-profile-size <MB>
+
+Maximum allowed size of the system.profile collection, expressed in megabytes.
+Default: 2 MB
+
+##### -h, --help
+
+### report \<output-html-file\> — build the HTML dashboard
 
 Converts the latest raw profiles into a single HTML file.
 
 Syntax example:
 
 ```
-npx mongo-query-profiler report ./report.html
+mongo-query-profiler report ./report.html
 ```
 
 The command gathers profiles from `profiling-reports` folder and embeds them into one HTML file, 
 so you get single self-contained interactive report, analyze it and send to other people by email/messenger etc.
 
-### cleanup-mongodb — disable profiler and deletes profiles in each database
+### cleanup-mongodb \<connection url\> — disable profiler and deletes profiles in each database
 
 Stops the profiler on all databases reachable through the provided URI and drops `system.profile` collections. Handy if `collect` was interrupted.
 
 Syntax example:
 
 ```
-npx mongo-query-profiler cleanup-mongodb mongodb://user:pass@host:27017
+mongo-query-profiler cleanup-mongodb mongodb://user:pass@host:27017
 ```
 
 ### cleanup-reports — delete local artifacts
@@ -123,7 +153,7 @@ Removes every subfolder inside `profiling-reports/`, freeing disk space or prepp
 Syntax example:
 
 ```
-npx mongo-query-profiler cleanup-reports
+mongo-query-profiler cleanup-reports
 ```
 
 
