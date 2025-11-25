@@ -28,5 +28,21 @@
   "bugs": {
     "url": "https://github.com/airs0urce/mongo-query-profiler/issues"
   },
-  "homepage": "https://github.com/airs0urce/mongo-query-profiler"
+  "homepage": "https://github.com/airs0urce/mongo-query-profiler",
+  "keywords": [
+    "mongo",
+    "mongodb",
+    "query-profiler",
+    "query-analysis",
+    "slow-query",
+    "performance",
+    "performance-monitoring",
+    "database",
+    "db-tools",
+    "profiling",
+    "monitoring",
+    "query-optimization",
+    "metrics",
+    "observability"
+  ]
 }
