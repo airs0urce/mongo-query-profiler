@@ -17,6 +17,7 @@ This is an simple tool which doesn't require any initial setup, for long-term us
 <https://www.percona.com/software/database-tools/percona-monitoring-and-management/mongodb-monitoring>
 
 ## Contents
+- [Profiler Report Screenshot](#profiler-report-screenshot)
 - [Quick Start](#quick-start)
   - [Install from NPM](#install-from-npm)
   - [Run using NPX](#run-using-npx)
@@ -34,6 +35,10 @@ This is an simple tool which doesn't require any initial setup, for long-term us
   - [GUI helpers](#gui-helpers)
 - [Best Practices](#best-practices)
 - [Troubleshooting](#troubleshooting)
+
+## Profiler Report Screenshot
+
+<img width="1226" height="722" alt="report_screenshot" src="https://github.com/user-attachments/assets/bedd0294-a14a-4b53-9645-341b2561d814" />
 
 ## Quick Start
 
