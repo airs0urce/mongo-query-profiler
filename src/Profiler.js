@@ -27,7 +27,9 @@ class Profiler {
             connectTimeoutMS: 20000,
         }
         if (this.opts.duration) {
-            connectionOptions.maxIdleTimeMS = this.opts.duration * 60 * 1000 + 5000;
+            const profilingDurationMs = this.opts.duration * 60 * 1000;
+            const exportStatsReserveMs = Math.ceil(durationMs / 2);
+            connectionOptions.maxIdleTimeMS = profilingDurationMs + exportStatsReserveMs;
         }
         const mongo = new MongoClient(
             this.mongoConnectionUrl, 
