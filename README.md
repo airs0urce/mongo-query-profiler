@@ -72,10 +72,10 @@ Note: If your MongoDB instance is behind a firewall or not exposed on a public p
 Every command supports `-h, --help` for details.
 
 Examples:
-mongo-query-profiler --help
-mongo-query-profiler collect --help
-mongo-query-profiler report --help
-mongo-query-profiler cleanup-mongodb --help
+mongo-query-profiler --help<br/>
+mongo-query-profiler collect --help<br/>
+mongo-query-profiler report --help<br/>
+mongo-query-profiler cleanup-mongodb --help<br/>
 mongo-query-profiler cleanup-reports --help
 
 <a id="collect"></a>
