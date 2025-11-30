@@ -16,7 +16,17 @@ Command‑line helper that collects slow query samples and converts them into an
 This is an simple tool which doesn't require any initial setup, for long-term usage you can consider Percona Monitoring And Management for MongoDB:
 <https://www.percona.com/software/database-tools/percona-monitoring-and-management/mongodb-monitoring>
 
+## Motivation
+
+I built this profiler when I had to analyze a MongoDB instance that hosted many databases, and doing it manually through the built-in profiler felt painfully slow. After seeing how Studio 3T approaches query profiling (<https://studio3t.com/knowledge-base/articles/mongodb-query-performance/>), I wanted something with the same usability but without two major drawbacks:
+
+1. Studio 3T cannot profile every database in the same instance in parallel.
+2. Studio 3T Query Profiler is locked behind a paid license that costs $499 per year.
+
+This project aims to beat those limitations by offering a profiler that keeps the good parts (simple reports, actionable insights), works across multiple databases simultaneously, and remains completely free and open for anyone to use.
+
 ## Contents
+- [Motivation](#motivation)
 - [Profiler Report Screenshot](#profiler-report-screenshot)
 - [Quick Start](#quick-start)
   - [Install from NPM](#install-from-npm)
@@ -216,5 +226,4 @@ Whichever client you use, ensure the tunnel stays open for the entire profiling 
 
   - In MongoDB sharded clusters, connect directly to the shards rather than the mongos router, since profiler data on mongos will not provide useful information.
   - If your reports are empty, increase the --duration or lower the --slowms value so the profiler can capture enough events.
-
 
